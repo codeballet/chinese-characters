@@ -15,9 +15,9 @@
         </header>
         <main class="main">
             <h1 class="main__h1">Learn Chinese</h1>
+            <h2 class="main--error d-none">Error message</h2>
             <h2 class="main__h2--find-by">Find by</h2>
-            <h2 class="main__h2--radical d-none">Radical</h2>
-            <button class="main__button--radical">Radical</button>
+            <button class="main__button--radicals">Radicals</button>
             <input
                 type="text"
                 class="main__input--pinyin"
@@ -28,8 +28,18 @@
                 class="main__input--english"
                 placeholder="English meaning"
             />
+            <section class="main--radicals d-none">
+                <h2 class="radicals__h2">Radicals</h2>
+                <table class="radicals__table">
+                    <tr class="radicals__tr--headers">
+                        <th class="radicals__th">Character</th>
+                        <th class="radicals__th">Pinyin</th>
+                        <th class="radicals__th">English</th>
+                    </tr>
+                </table>
+            </section>
         </main>
-        <footer class="footer"></footer>
+        <footer class="footer">&copyJohan Stjernholm 2024</footer>
         <script src="./index.js"></script>
     </body>
 </html>
