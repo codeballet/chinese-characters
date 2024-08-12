@@ -15,7 +15,7 @@ async function fetchComposites(radical) {
     return data;
 }
 
-// Create Array with english translation
+// Create Array with english translations
 function extractEnglish(translation) {
     if (translation && translation.length > 0) {
         const englishList = translation.split(/[,;]/);
@@ -26,19 +26,31 @@ function extractEnglish(translation) {
     }
 }
 
-// Extract pinyin
-function extractPinyin(word) {
-    // TODO: can be several, separated by whitespace, return list
-    return word ? word.slice(0, -1).toLowerCase() : null;
+// Extract pinyin Array
+function extractPinyin(words) {
+    if (words) {
+        const wordsList = words.split(" ");
+        const wordsListCleaned = wordsList.map((word) =>
+            word.slice(0, -1).toLowerCase().trim()
+        );
+        return wordsListCleaned;
+    } else {
+        return [];
+    }
 }
 
-// Extract tone
-function extractTone(word) {
-    // TODO: can be several, separated by whitespace, return list
-    return word ? parseInt(word[word.length - 1]) : null;
+// Extract tone Array
+function extractTone(words) {
+    if (words) {
+        const wordsList = words.split(" ");
+        const tonesList = wordsList.map((word) => word[word.length - 1]);
+        return tonesList;
+    } else {
+        return [];
+    }
 }
 
-// Create list of composite objects
+// Create list of objects for composite characters
 function compositesList(composites) {
     const compositesList = [];
     let id = 0;
@@ -55,7 +67,7 @@ function compositesList(composites) {
     return compositesList;
 }
 
-// Create dictionary
+// Create complete dictionary
 async function createDictionary(radicals) {
     const dictionary = [];
     for (let radical of radicals) {
@@ -72,9 +84,8 @@ async function createDictionary(radicals) {
     return dictionary;
 }
 
-// Run when DOM is loaded
+// Run once DOM is loaded
 window.addEventListener("DOMContentLoaded", async () => {
-    // Create dictionary
     const radicals = await fetchRadicals();
     const dictionary = await createDictionary(radicals);
     console.log(dictionary);
