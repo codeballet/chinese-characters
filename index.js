@@ -188,7 +188,23 @@ function resultsTable(showingRadicals, dictionary) {
     // Create table header row
     const trHeaders = document.createElement("tr");
     trHeaders.classList.add("results__tr--headers");
-    const thCharacter = "";
+    resultsTable.appendChild(trHeaders);
+
+    // Create table headers
+    const thCharacter = document.createElement("th");
+    thCharacter.classList.add("results__th");
+    thCharacter.innerText = "Character";
+    trHeaders.appendChild(thCharacter);
+
+    const thPinyin = document.createElement("th");
+    thPinyin.classList.add("results__th");
+    thPinyin.innerText = "Pinyin";
+    trHeaders.appendChild(thPinyin);
+
+    const thEnglish = document.createElement("th");
+    thEnglish.classList.add("results__th");
+    thEnglish.innerText = "English";
+    trHeaders.appendChild(thEnglish);
 
     // Create table data rows
     if (showingRadicals) {
@@ -220,7 +236,7 @@ function resultsTable(showingRadicals, dictionary) {
             tr.appendChild(tdEnglish);
         }
     } else {
-        // Show all matching Characters in each radical
+        // Show all matching Characters
         for (entry of dictionary) {
             for (item of entry.composites) {
                 // Append new table row
