@@ -172,7 +172,7 @@ function pinyinTableFormat(entry) {
 }
 
 // Create table with find results in the DOM
-function resultsTable(dictionary) {
+function resultsTable(showingRadicals, dictionary) {
     // remove old table from DOM
     const oldResultsTableRef = document.querySelector(".results__table");
     if (oldResultsTableRef) {
@@ -191,32 +191,65 @@ function resultsTable(dictionary) {
     const thCharacter = "";
 
     // Create table data rows
-    for (entry of dictionary) {
-        // Append new table row
-        const tr = document.createElement("tr");
-        tr.classList.add("results__tr--data");
-        resultsTable.appendChild(tr);
+    if (showingRadicals) {
+        for (entry of dictionary) {
+            // Append new table row
+            const tr = document.createElement("tr");
+            tr.classList.add("results__tr--data");
+            resultsTable.appendChild(tr);
 
-        // Append table data for Character as button
-        const tdCharacter = document.createElement("td");
-        tdCharacter.classList.add("results__td");
-        const buttonCharacter = document.createElement("button");
-        buttonCharacter.classList.add("results__button");
-        buttonCharacter.innerText = entry.character;
-        tr.appendChild(tdCharacter);
-        tdCharacter.appendChild(buttonCharacter);
+            // Append table data for Character as button
+            const tdCharacter = document.createElement("td");
+            tdCharacter.classList.add("results__td");
+            const buttonCharacter = document.createElement("button");
+            buttonCharacter.classList.add("results__button");
+            buttonCharacter.innerText = entry.character;
+            tr.appendChild(tdCharacter);
+            tdCharacter.appendChild(buttonCharacter);
 
-        // Append Pinyin row data
-        const tdPinyin = document.createElement("td");
-        tdPinyin.classList.add("pinyin__td");
-        tdPinyin.innerText = pinyinTableFormat(entry);
-        tr.appendChild(tdPinyin);
+            // Append Pinyin row data
+            const tdPinyin = document.createElement("td");
+            tdPinyin.classList.add("pinyin__td");
+            tdPinyin.innerText = pinyinTableFormat(entry);
+            tr.appendChild(tdPinyin);
 
-        // Append English row data
-        const tdEnglish = document.createElement("td");
-        tdEnglish.classList.add("english__td");
-        tdEnglish.innerText = entry.english.join(", ");
-        tr.appendChild(tdEnglish);
+            // Append English row data
+            const tdEnglish = document.createElement("td");
+            tdEnglish.classList.add("english__td");
+            tdEnglish.innerText = entry.english.join(", ");
+            tr.appendChild(tdEnglish);
+        }
+    } else {
+        // Show all matching Characters in each radical
+        for (entry of dictionary) {
+            for (item of entry.composites) {
+                // Append new table row
+                const tr = document.createElement("tr");
+                tr.classList.add("results__tr--data");
+                resultsTable.appendChild(tr);
+
+                // Append table data for Character as button
+                const tdCharacter = document.createElement("td");
+                tdCharacter.classList.add("results__td");
+                const buttonCharacter = document.createElement("button");
+                buttonCharacter.classList.add("results__button");
+                buttonCharacter.innerText = item.character;
+                tr.appendChild(tdCharacter);
+                tdCharacter.appendChild(buttonCharacter);
+
+                // Append Pinyin row data
+                const tdPinyin = document.createElement("td");
+                tdPinyin.classList.add("pinyin__td");
+                tdPinyin.innerText = pinyinTableFormat(item);
+                tr.appendChild(tdPinyin);
+
+                // Append English row data
+                const tdEnglish = document.createElement("td");
+                tdEnglish.classList.add("english__td");
+                tdEnglish.innerText = item.english.join(", ");
+                tr.appendChild(tdEnglish);
+            }
+        }
     }
 }
 
@@ -298,11 +331,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                     document.querySelector(".find__input--english").value = "";
 
                     if (showingRadicals) {
-                        // Create and toggle on display of radicals table
-                        resultsTable(dictionary);
-                        // document
-                        //     .querySelector(".results__table")
-                        //     .classList.toggle("d-none");
+                        resultsTable(showingRadicals, dictionary);
                     } else {
                         // Make table invisible
                         makeTableInvisible();
@@ -339,9 +368,11 @@ window.addEventListener("DOMContentLoaded", async () => {
                             e.target.value,
                             dictionary
                         );
-                        resultsTable(filteredDictionary);
+                        resultsTable(showingRadicals, filteredDictionary);
                     }
                 });
+
+            // TODO: English input field eventListener
         }
     }
 });
