@@ -98,18 +98,82 @@ async function createDictionary(radicals) {
     return dictionary;
 }
 
+// Find only radicals or all characters?
+function onlyRadicals(allCharacters, buttonText) {
+    return buttonText === allCharacters ? true : false;
+}
+
+// Toggle and set text on find button
+function toggleFindButton(showRadicals, allCharacters, radicalsOnly) {
+    const findButtonRef = document.querySelector(".find__button");
+    if (radicalsOnly) {
+        findButtonRef.innerText = showRadicals;
+    } else {
+        findButtonRef.innerText = allCharacters;
+    }
+}
+
+// Toggle and set results header
+function toggleResultsH2(radicalsOnly) {
+    const resultsH2Ref = document.querySelector(".results__h2");
+    if (radicalsOnly) {
+        resultsH2Ref.innerText = "Showing All Characters";
+    } else {
+        resultsH2Ref.innerText = "Showing Radicals";
+    }
+}
+
+//
+function filterSearch(showingRadicals, searchTerm, dictionary) {
+    let newDictionary = [];
+
+    if (showingRadicals) {
+        // Only look through the radicals
+        for (element of dictionary) {
+            newDictionary = dictionary.filter((element) => {
+                for (item of element.pinyin) {
+                    if (item.includes(searchTerm)) {
+                        return element;
+                    }
+                }
+            });
+        }
+    } else {
+        // Look through all characters
+        for (element of dictionary) {
+            let charactersDictinary = [];
+            for (item of element.composites) {
+                if (item.pinyin.length > 0) {
+                    for (pinyin of item.pinyin) {
+                        if (pinyin.includes(searchTerm)) {
+                            charactersDictinary.push(item);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (charactersDictinary.length > 0) {
+                element["composites"] = charactersDictinary;
+                newDictionary.push(element);
+            }
+        }
+    }
+    console.log("New dict: ", newDictionary);
+    return newDictionary;
+}
+
 // Create table with find results in the DOM
 function resultsTable(dictionary) {
     // Get results table from DOM
     const resultsTableRef = document.querySelector(".results__table");
 
     // Remove any existing table rows with data
-    const trOld = document.querySelectorAll(".results--data");
+    const trOld = document.querySelectorAll(".results__tr--data");
     for (tr of trOld) {
         tr.remove();
     }
 
-    // Return a formatted list of: ['pinyin (tone)']
+    // Return a formatted list as: ['pinyin (tone)']
     function pinyinTableFormat(entry) {
         const formatted = [];
         for (let i = 0; i < entry.pinyin.length; i++) {
@@ -122,7 +186,7 @@ function resultsTable(dictionary) {
     for (entry of dictionary) {
         // Append new table row
         const tr = document.createElement("tr");
-        tr.classList.add("results--data");
+        tr.classList.add("results__tr--data");
         resultsTableRef.appendChild(tr);
 
         // Append Character row data with anchor
@@ -148,75 +212,6 @@ function resultsTable(dictionary) {
     }
 }
 
-// Toggle button text and display of find--results section
-function toggleResults(dictionary) {
-    const radicals = "Radicals Only";
-    const characters = "All Characters";
-    let radicalsButtonRef = document.querySelector(".find__button--radicals");
-    const findResultsRef = document.querySelector(".find--results");
-
-    if (
-        radicalsButtonRef.innerText === radicals &&
-        findResultsRef.classList.contains("d-none")
-    ) {
-        // Show radicals
-        radicalsButtonRef.innerText = characters;
-        findResultsRef.classList.toggle("d-none");
-        resultsTable(dictionary);
-    } else if (
-        radicalsButtonRef.innerText === characters &&
-        !findResultsRef.classList.contains("d-none")
-    ) {
-        // Hide radicals
-        radicalsButtonRef.innerText = radicals;
-        findResultsRef.classList.toggle("d-none");
-    } else if (!findResultsRef.classList.contains("d-none")) {
-        // Button and page content out of sync, correct button
-        radicalsButtonRef.innerText = characters;
-    } else {
-        radicalsButtonRef.innerText = radicals;
-    }
-}
-
-//
-function filterSearch(radicalsOnly, searchTerm, dictionary) {
-    let newDictionary = [];
-
-    if (radicalsOnly) {
-        // Only look through the radicals
-        for (element of dictionary) {
-            newDictionary = dictionary.filter((element) => {
-                for (item of element.pinyin) {
-                    if (item.includes(searchTerm)) {
-                        return element;
-                    }
-                }
-            });
-        }
-    } else {
-        // Look through all characters
-        for (element of dictionary) {
-            let charactersDictinary = [];
-            for (item of element.composites) {
-                if (item.pinyin.length > 0) {
-                    for (pinyin of item.pinyin) {
-                        if (pinyin.includes(searchTerm)) {
-                            charactersDictinary.push(item);
-                        }
-                    }
-                }
-            }
-            if (charactersDictinary.length > 0) {
-                console.log("Charaters dict: ", charactersDictinary);
-                element["composites"] = charactersDictinary;
-                newDictionary.push(element);
-            }
-        }
-    }
-    console.log("New dict: ", newDictionary);
-    return newDictionary;
-}
-
 // Run once DOM is loaded
 window.addEventListener("DOMContentLoaded", async () => {
     const radicals = await fetchRadicals();
@@ -229,11 +224,51 @@ window.addEventListener("DOMContentLoaded", async () => {
         } else {
             // Successfully created dictionary
 
-            // Radicals button eventListener
+            // Find button text content
+            const showRadicals = "Show Radicals";
+            const allCharacters = "All Characters";
+
+            // find__button eventListener
             document
-                .querySelector(".find__button--radicals")
+                .querySelector(".find__button")
                 .addEventListener("click", (e) => {
-                    toggleResults(dictionary);
+                    const findButtonRef =
+                        document.querySelector(".find__button");
+
+                    // Update state of page
+                    let showingRadicals = onlyRadicals(
+                        allCharacters,
+                        findButtonRef.innerText
+                    );
+
+                    // Toggle and set find__button text
+                    toggleFindButton(
+                        showRadicals,
+                        allCharacters,
+                        showingRadicals
+                    );
+
+                    // Toggle and set results heading
+                    toggleResultsH2(showingRadicals);
+
+                    // Update state of page
+                    showingRadicals = onlyRadicals(
+                        allCharacters,
+                        findButtonRef.innerText
+                    );
+
+                    if (showingRadicals) {
+                        // Create and toggle on display of radicals table
+                        resultsTable(dictionary);
+                        document
+                            .querySelector(".results__table")
+                            .classList.toggle("d-none");
+                    } else {
+                        // Toggle on display of radicals table
+                        document
+                            .querySelector(".results__table")
+                            .classList.toggle("d-none");
+                    }
                 });
 
             // Pinyin input field eventListener
@@ -241,33 +276,35 @@ window.addEventListener("DOMContentLoaded", async () => {
             document
                 .querySelector(".find__input--pinyin")
                 .addEventListener("keyup", (e) => {
-                    // Find radicals only or all characters?
-                    const findButtonRadicalsRef = document.querySelector(
-                        ".find__button--radicals"
+                    const findButtonRef =
+                        document.querySelector(".find__button");
+                    // Update state of page
+                    let showingRadicals = onlyRadicals(
+                        allCharacters,
+                        findButtonRef.innerText
                     );
-                    const radicalsOnly =
-                        findButtonRadicalsRef.innerText === "All Characters"
-                            ? true
-                            : false;
 
                     // Respond to keypresses
-                    if (
-                        e.key !== "Enter" &&
-                        e.key !== "Backspace" &&
-                        e.key !== "Delete"
-                    ) {
-                        searchTerm += e.key;
+                    if (e.key === "Enter") {
+                        searchTerm = e.target.value;
                         const filteredDictionary = filterSearch(
-                            radicalsOnly,
+                            showingRadicals,
                             searchTerm,
                             dictionary
                         );
                         resultsTable(filteredDictionary);
-                    } else {
-                        // filterSearch(searchTerm, dictionary);
-                        // console.log(e);
+                        // Reset input field
                         e.target.value = "";
                         searchTerm = "";
+                    } else {
+                        console.log("catch all", e.key);
+                        searchTerm = e.target.value;
+                        const filteredDictionary = filterSearch(
+                            showingRadicals,
+                            searchTerm,
+                            dictionary
+                        );
+                        resultsTable(filteredDictionary);
                     }
                 });
         }
