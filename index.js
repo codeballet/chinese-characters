@@ -98,13 +98,13 @@ async function createDictionary(radicals) {
     return dictionary;
 }
 
-// Create table with radicals in the DOM
-function radicalsTable(dictionary) {
-    // Get radicals table from DOM
-    const radicalsTableRef = document.querySelector(".radicals__table");
+// Create table with find results in the DOM
+function resultsTable(dictionary) {
+    // Get results table from DOM
+    const resultsTableRef = document.querySelector(".results__table");
 
     // Remove any existing table rows with data
-    const trOld = document.querySelectorAll(".radicals__tr--data");
+    const trOld = document.querySelectorAll(".results--data");
     for (tr of trOld) {
         tr.remove();
     }
@@ -122,14 +122,17 @@ function radicalsTable(dictionary) {
     for (entry of dictionary) {
         // Append new table row
         const tr = document.createElement("tr");
-        tr.classList.add("radicals__tr--data");
-        radicalsTableRef.appendChild(tr);
+        tr.classList.add("results--data");
+        resultsTableRef.appendChild(tr);
 
-        // Append Character row data
+        // Append Character row data with anchor
         const tdCharacter = document.createElement("td");
-        tdCharacter.classList.add("radicals__td");
-        tdCharacter.innerText = entry.character;
+        tdCharacter.classList.add("results__td");
+        const buttonCharacter = document.createElement("button");
+        buttonCharacter.classList.add("results__button");
+        buttonCharacter.innerText = entry.character;
         tr.appendChild(tdCharacter);
+        tdCharacter.appendChild(buttonCharacter);
 
         // Append Pinyin row data
         const tdPinyin = document.createElement("td");
@@ -145,6 +148,75 @@ function radicalsTable(dictionary) {
     }
 }
 
+// Toggle button text and display of find--results section
+function toggleResults(dictionary) {
+    const radicals = "Radicals Only";
+    const characters = "All Characters";
+    let radicalsButtonRef = document.querySelector(".find__button--radicals");
+    const findResultsRef = document.querySelector(".find--results");
+
+    if (
+        radicalsButtonRef.innerText === radicals &&
+        findResultsRef.classList.contains("d-none")
+    ) {
+        // Show radicals
+        radicalsButtonRef.innerText = characters;
+        findResultsRef.classList.toggle("d-none");
+        resultsTable(dictionary);
+    } else if (
+        radicalsButtonRef.innerText === characters &&
+        !findResultsRef.classList.contains("d-none")
+    ) {
+        // Hide radicals
+        radicalsButtonRef.innerText = radicals;
+        findResultsRef.classList.toggle("d-none");
+    } else if (!findResultsRef.classList.contains("d-none")) {
+        // Button and page content out of sync, correct button
+        radicalsButtonRef.innerText = characters;
+    } else {
+        radicalsButtonRef.innerText = radicals;
+    }
+}
+
+//
+function filterSearch(radicalsOnly, searchTerm, dictionary) {
+    let newDictionary = [];
+
+    if (radicalsOnly) {
+        // Only look through the radicals
+        for (element of dictionary) {
+            newDictionary = dictionary.filter((element) => {
+                for (item of element.pinyin) {
+                    if (item.includes(searchTerm)) {
+                        return element;
+                    }
+                }
+            });
+        }
+    } else {
+        // Look through all characters
+        for (element of dictionary) {
+            let charactersDictinary = [];
+            for (item of element.composites) {
+                if (item.pinyin.length > 0) {
+                    for (pinyin of item.pinyin) {
+                        if (pinyin.includes(searchTerm)) {
+                            charactersDictinary.push(item);
+                        }
+                    }
+                }
+            }
+            if (charactersDictinary.length > 0) {
+                console.log("Charaters dict: ", charactersDictinary);
+                element["composites"] = charactersDictinary;
+                newDictionary.push(element);
+            }
+        }
+    }
+    console.log("New dict: ", newDictionary);
+    return newDictionary;
+}
+
 // Run once DOM is loaded
 window.addEventListener("DOMContentLoaded", async () => {
     const radicals = await fetchRadicals();
@@ -155,12 +227,48 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (dictionary.error) {
             // No composite characters from API, inform user
         } else {
-            // TODO: When pressing the 'radical' button, show list of radicals
+            // Successfully created dictionary
+
+            // Radicals button eventListener
             document
-                .querySelector(".main__button--radicals")
+                .querySelector(".find__button--radicals")
                 .addEventListener("click", (e) => {
-                    console.log("Radicals Button clicked");
-                    radicalsTable(dictionary);
+                    toggleResults(dictionary);
+                });
+
+            // Pinyin input field eventListener
+            let searchTerm = "";
+            document
+                .querySelector(".find__input--pinyin")
+                .addEventListener("keyup", (e) => {
+                    // Find radicals only or all characters?
+                    const findButtonRadicalsRef = document.querySelector(
+                        ".find__button--radicals"
+                    );
+                    const radicalsOnly =
+                        findButtonRadicalsRef.innerText === "All Characters"
+                            ? true
+                            : false;
+
+                    // Respond to keypresses
+                    if (
+                        e.key !== "Enter" &&
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete"
+                    ) {
+                        searchTerm += e.key;
+                        const filteredDictionary = filterSearch(
+                            radicalsOnly,
+                            searchTerm,
+                            dictionary
+                        );
+                        resultsTable(filteredDictionary);
+                    } else {
+                        // filterSearch(searchTerm, dictionary);
+                        // console.log(e);
+                        e.target.value = "";
+                        searchTerm = "";
+                    }
                 });
         }
     }

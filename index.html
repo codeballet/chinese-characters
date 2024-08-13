@@ -16,27 +16,33 @@
         <main class="main">
             <h1 class="main__h1">Learn Chinese</h1>
             <h2 class="main--error d-none">Error message</h2>
-            <h2 class="main__h2--find-by">Find by</h2>
-            <button class="main__button--radicals">Radicals</button>
-            <input
-                type="text"
-                class="main__input--pinyin"
-                placeholder="Pinyin"
-            />
-            <input
-                type="text"
-                class="main__input--english"
-                placeholder="English meaning"
-            />
-            <section class="main--radicals d-none">
-                <h2 class="radicals__h2">Radicals</h2>
-                <table class="radicals__table">
-                    <tr class="radicals__tr--headers">
-                        <th class="radicals__th">Character</th>
-                        <th class="radicals__th">Pinyin</th>
-                        <th class="radicals__th">English</th>
-                    </tr>
-                </table>
+            <section class="main--find">
+                <h2 class="find__h2">Find by</h2>
+                <button class="find__button--radicals">Radicals Only</button>
+                <input
+                    type="text"
+                    class="find__input--pinyin"
+                    placeholder="Pinyin"
+                />
+                <input
+                    type="text"
+                    class="find__input--english"
+                    placeholder="English meaning"
+                />
+                <section class="find--results d-none">
+                    <h2 class="results__h2">Radicals</h2>
+                    <table class="results__table">
+                        <tr class="results__tr--headers">
+                            <th class="results__th">Character</th>
+                            <th class="results__th">Pinyin</th>
+                            <th class="results__th">English</th>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+
+            <section class="main--cards d-none">
+                <h2 class="cards__h2">Your cards</h2>
             </section>
         </main>
         <footer class="footer">&copyJohan Stjernholm 2024</footer>
