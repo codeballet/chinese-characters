@@ -162,34 +162,42 @@ function filterSearch(showingRadicals, searchTerm, dictionary) {
     return newDictionary;
 }
 
+// Return a formatted string with all pinyin and tone
+function pinyinTableFormat(entry) {
+    const formatted = [];
+    for (let i = 0; i < entry.pinyin.length; i++) {
+        formatted.push(`${entry.pinyin[i]} (${entry.tone[i]})`);
+    }
+    return formatted.join(", ");
+}
+
 // Create table with find results in the DOM
 function resultsTable(dictionary) {
-    // Get results table from DOM
-    const resultsTableRef = document.querySelector(".results__table");
-
-    // Remove any existing table rows with data
-    const trOld = document.querySelectorAll(".results__tr--data");
-    for (tr of trOld) {
-        tr.remove();
+    // remove old table from DOM
+    const oldResultsTableRef = document.querySelector(".results__table");
+    if (oldResultsTableRef) {
+        oldResultsTableRef.remove();
     }
 
-    // Return a formatted list as: ['pinyin (tone)']
-    function pinyinTableFormat(entry) {
-        const formatted = [];
-        for (let i = 0; i < entry.pinyin.length; i++) {
-            formatted.push(`${entry.pinyin[i]} (${entry.tone[i]})`);
-        }
-        return formatted.join(", ");
-    }
+    // Create table
+    const findResultsRef = document.querySelector(".find--results");
+    const resultsTable = document.createElement("table");
+    resultsTable.classList.add("results__table");
+    findResultsRef.appendChild(resultsTable);
 
-    // Table data rows
+    // Create table header row
+    const trHeaders = document.createElement("tr");
+    trHeaders.classList.add("results__tr--headers");
+    const thCharacter = "";
+
+    // Create table data rows
     for (entry of dictionary) {
         // Append new table row
         const tr = document.createElement("tr");
         tr.classList.add("results__tr--data");
-        resultsTableRef.appendChild(tr);
+        resultsTable.appendChild(tr);
 
-        // Append Character row data with anchor
+        // Append table data for Character as button
         const tdCharacter = document.createElement("td");
         tdCharacter.classList.add("results__td");
         const buttonCharacter = document.createElement("button");
@@ -209,6 +217,34 @@ function resultsTable(dictionary) {
         tdEnglish.classList.add("english__td");
         tdEnglish.innerText = entry.english.join(", ");
         tr.appendChild(tdEnglish);
+    }
+}
+
+function makeTableVisible() {
+    if (document.querySelector(".results__table")) {
+        if (
+            document
+                .querySelector(".results__table")
+                .classList.contains("d-none")
+        ) {
+            document
+                .querySelector(".results__table")
+                .classList.toggle("d-none");
+        }
+    }
+}
+
+function makeTableInvisible() {
+    if (document.querySelector(".results__table")) {
+        if (
+            !document
+                .querySelector(".results__table")
+                .classList.contains("d-none")
+        ) {
+            document
+                .querySelector(".results__table")
+                .classList.toggle("d-none");
+        }
     }
 }
 
@@ -257,51 +293,50 @@ window.addEventListener("DOMContentLoaded", async () => {
                         findButtonRef.innerText
                     );
 
+                    // Reset input fields
+                    document.querySelector(".find__input--pinyin").value = "";
+                    document.querySelector(".find__input--english").value = "";
+
                     if (showingRadicals) {
                         // Create and toggle on display of radicals table
                         resultsTable(dictionary);
-                        document
-                            .querySelector(".results__table")
-                            .classList.toggle("d-none");
+                        // document
+                        //     .querySelector(".results__table")
+                        //     .classList.toggle("d-none");
                     } else {
-                        // Toggle on display of radicals table
-                        document
-                            .querySelector(".results__table")
-                            .classList.toggle("d-none");
+                        // Make table invisible
+                        makeTableInvisible();
                     }
                 });
 
             // Pinyin input field eventListener
-            let searchTerm = "";
             document
                 .querySelector(".find__input--pinyin")
                 .addEventListener("keyup", (e) => {
+                    // Update state of page
                     const findButtonRef =
                         document.querySelector(".find__button");
-                    // Update state of page
                     let showingRadicals = onlyRadicals(
                         allCharacters,
                         findButtonRef.innerText
                     );
 
+                    // Ensure table is visible
+                    makeTableVisible();
+
                     // Respond to keypresses
                     if (e.key === "Enter") {
-                        searchTerm = e.target.value;
-                        const filteredDictionary = filterSearch(
-                            showingRadicals,
-                            searchTerm,
-                            dictionary
-                        );
-                        resultsTable(filteredDictionary);
                         // Reset input field
                         e.target.value = "";
-                        searchTerm = "";
+
+                        // Hide table
+                        document
+                            .querySelector(".results__table")
+                            .classList.toggle("d-none");
                     } else {
-                        console.log("catch all", e.key);
-                        searchTerm = e.target.value;
                         const filteredDictionary = filterSearch(
                             showingRadicals,
-                            searchTerm,
+                            e.target.value,
                             dictionary
                         );
                         resultsTable(filteredDictionary);
