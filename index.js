@@ -103,7 +103,7 @@ function onlyRadicals(allCharacters, buttonText) {
     return buttonText === allCharacters ? true : false;
 }
 
-// Toggle and set text on find button
+// Toggle text on find button
 function toggleFindButton(showRadicals, allCharacters, radicalsOnly) {
     const findButtonRef = document.querySelector(".find__button");
     if (radicalsOnly) {
@@ -113,7 +113,7 @@ function toggleFindButton(showRadicals, allCharacters, radicalsOnly) {
     }
 }
 
-// Toggle and set results header
+// Toggle results header
 function toggleResultsH2(radicalsOnly) {
     const resultsH2Ref = document.querySelector(".results__h2");
     if (radicalsOnly) {
@@ -123,7 +123,7 @@ function toggleResultsH2(radicalsOnly) {
     }
 }
 
-//
+// Filter search from dictionary
 function filterSearch(showingRadicals, searchTerm, dictionary) {
     let newDictionary = [];
 
@@ -171,7 +171,7 @@ function pinyinTableFormat(entry) {
     return formatted.join(", ");
 }
 
-// Create table with find results in the DOM
+// Create table with search results in the DOM
 function resultsTable(showingRadicals, dictionary) {
     // remove old table from DOM
     const oldResultsTableRef = document.querySelector(".results__table");
@@ -269,6 +269,7 @@ function resultsTable(showingRadicals, dictionary) {
     }
 }
 
+// Show table in DOM
 function makeTableVisible() {
     if (document.querySelector(".results__table")) {
         if (
@@ -283,6 +284,7 @@ function makeTableVisible() {
     }
 }
 
+// Hide table in DOM
 function makeTableInvisible() {
     if (document.querySelector(".results__table")) {
         if (
