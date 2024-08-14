@@ -124,16 +124,30 @@ function toggleResultsH2(radicalsOnly) {
 }
 
 // Filter search from dictionary
-function filterSearch(showingRadicals, searchTerm, dictionary) {
+function filterSearch(
+    showingRadicals,
+    searchTerm,
+    dictionary,
+    language = "pinyin"
+) {
     let newDictionary = [];
 
     if (showingRadicals) {
         // Only look through the radicals
         for (element of dictionary) {
             newDictionary = dictionary.filter((element) => {
-                for (item of element.pinyin) {
-                    if (item.includes(searchTerm)) {
-                        return element;
+                if (language === "pinyin") {
+                    for (item of element.pinyin) {
+                        if (item.includes(searchTerm)) {
+                            return element;
+                        }
+                    }
+                } else {
+                    // English search
+                    for (item of element.english) {
+                        if (item.includes(searchTerm)) {
+                            return element;
+                        }
                     }
                 }
             });
@@ -143,11 +157,22 @@ function filterSearch(showingRadicals, searchTerm, dictionary) {
         for (element of dictionary) {
             let charactersDictinary = [];
             for (item of element.composites) {
-                if (item.pinyin.length > 0) {
-                    for (pinyin of item.pinyin) {
-                        if (pinyin.includes(searchTerm)) {
-                            charactersDictinary.push(item);
-                            break;
+                if (language === "pinyin") {
+                    if (item.pinyin.length > 0) {
+                        for (pinyin of item.pinyin) {
+                            if (pinyin.includes(searchTerm)) {
+                                charactersDictinary.push(item);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    if (item.english.length > 0) {
+                        for (word of item.english) {
+                            if (word.includes(searchTerm)) {
+                                charactersDictinary.push(item);
+                                break;
+                            }
                         }
                     }
                 }
@@ -390,7 +415,40 @@ window.addEventListener("DOMContentLoaded", async () => {
                     }
                 });
 
-            // TODO: English input field eventListener
+            // English input field eventListener
+            document
+                .querySelector(".find__input--english")
+                .addEventListener("keyup", (e) => {
+                    // Update state of page
+                    const findButtonRef =
+                        document.querySelector(".find__button");
+                    let showingRadicals = onlyRadicals(
+                        allCharacters,
+                        findButtonRef.innerText
+                    );
+
+                    // Ensure table is visible
+                    makeTableVisible();
+
+                    // Respond to keypresses
+                    if (e.key === "Enter") {
+                        // Reset input field
+                        e.target.value = "";
+
+                        // Hide table
+                        document
+                            .querySelector(".results__table")
+                            .classList.toggle("d-none");
+                    } else {
+                        const filteredDictionary = filterSearch(
+                            showingRadicals,
+                            e.target.value,
+                            dictionary,
+                            "english"
+                        );
+                        resultsTable(showingRadicals, filteredDictionary);
+                    }
+                });
         }
     }
 });
