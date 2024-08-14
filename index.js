@@ -70,7 +70,7 @@ function compositesList(composites) {
     let id = 0;
     for (let composite of composites) {
         compositesList.push({
-            id: id,
+            id: encodeURI(composite.string),
             character: composite.string,
             english: extractEnglish(composite.kDefinition),
             pinyin: extractPinyin(composite.kMandarin),
@@ -85,9 +85,12 @@ function compositesList(composites) {
 async function createDictionary(radicals) {
     const dictionary = [];
     for (let radical of radicals) {
+        // let encoded = encodeURI(radical.string);
+        // console.log(encoded);
+        // console.log(decodeURI(encoded));
         const composites = await fetchComposites(radical.radical);
         dictionary.push({
-            id: radical.radical,
+            id: encodeURI(radical.string),
             character: radical.string,
             english: extractEnglish(radical.kDefinition),
             pinyin: extractPinyin(radical.kMandarin),
@@ -237,16 +240,18 @@ function resultsTable(showingRadicals, dictionary) {
             // Append new table row
             const tr = document.createElement("tr");
             tr.classList.add("results__tr--data");
+            tr.id = `${entry.id}_${entry.composites[0].id}`;
             resultsTable.appendChild(tr);
 
-            // Append table data for Character as button
+            // Append Character row data
             const tdCharacter = document.createElement("td");
             tdCharacter.classList.add("results__td");
-            const buttonCharacter = document.createElement("button");
-            buttonCharacter.classList.add("results__button");
-            buttonCharacter.innerText = entry.character;
+            tdCharacter.innerText = entry.character;
+            // const buttonCharacter = document.createElement("button");
+            // buttonCharacter.classList.add("results__button");
+            // buttonCharacter.innerText = entry.character;
             tr.appendChild(tdCharacter);
-            tdCharacter.appendChild(buttonCharacter);
+            // tdCharacter.appendChild(buttonCharacter);
 
             // Append Pinyin row data
             const tdPinyin = document.createElement("td");
@@ -267,16 +272,18 @@ function resultsTable(showingRadicals, dictionary) {
                 // Append new table row
                 const tr = document.createElement("tr");
                 tr.classList.add("results__tr--data");
+                tr.id = `${entry.id}_${item.id}`;
                 resultsTable.appendChild(tr);
 
-                // Append table data for Character as button
+                // Append Character row data
                 const tdCharacter = document.createElement("td");
                 tdCharacter.classList.add("results__td");
-                const buttonCharacter = document.createElement("button");
-                buttonCharacter.classList.add("results__button");
-                buttonCharacter.innerText = item.character;
+                tdCharacter.innerText = item.character;
+                // const buttonCharacter = document.createElement("button");
+                // buttonCharacter.classList.add("results__button");
+                // buttonCharacter.innerText = item.character;
                 tr.appendChild(tdCharacter);
-                tdCharacter.appendChild(buttonCharacter);
+                // tdCharacter.appendChild(buttonCharacter);
 
                 // Append Pinyin row data
                 const tdPinyin = document.createElement("td");
@@ -324,6 +331,16 @@ function makeTableInvisible() {
     }
 }
 
+// Add eventListener to all table data rows
+function tableRowListeners() {
+    const resultsTrData = document.querySelectorAll(".results__tr--data");
+    for (character of resultsTrData) {
+        character.addEventListener("click", (e) => {
+            console.log(e.target.parentElement.id);
+        });
+    }
+}
+
 // Run once DOM is loaded
 window.addEventListener("DOMContentLoaded", async () => {
     const radicals = await fetchRadicals();
@@ -335,6 +352,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             // No composite characters from API, inform user
         } else {
             // Successfully created dictionary
+            console.log("Dictionary loaded");
 
             // Navigation Find button eventListener
             document
@@ -400,7 +418,10 @@ window.addEventListener("DOMContentLoaded", async () => {
                     document.querySelector(".find__input--english").value = "";
 
                     if (showingRadicals) {
+                        console.log(dictionary);
                         resultsTable(showingRadicals, dictionary);
+                        // add eventListener to all table rows
+                        tableRowListeners();
                     } else {
                         // Make table invisible
                         makeTableInvisible();
@@ -438,6 +459,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                             dictionary
                         );
                         resultsTable(showingRadicals, filteredDictionary);
+
+                        // add eventListener to all table rows
+                        tableRowListeners();
                     }
                 });
 
