@@ -336,7 +336,33 @@ window.addEventListener("DOMContentLoaded", async () => {
         } else {
             // Successfully created dictionary
 
-            // Find button text content
+            // Navigation Find button eventListener
+            document
+                .querySelector(".header__button--find")
+                .addEventListener("click", (e) => {
+                    console.log("Clicked Navigation button Find");
+                    document
+                        .querySelector(".main--find")
+                        .classList.remove("d-none");
+                    document
+                        .querySelector(".main--cards")
+                        .classList.add("d-none");
+                });
+
+            // Navigation Card button eventListener
+            document
+                .querySelector(".header__button--cards")
+                .addEventListener("click", (e) => {
+                    console.log("Clicked Navigation button Cards");
+                    document
+                        .querySelector(".main--find")
+                        .classList.add("d-none");
+                    document
+                        .querySelector(".main--cards")
+                        .classList.remove("d-none");
+                });
+
+            // Search Find button text content
             const showRadicals = "Show Radicals";
             const allCharacters = "All Characters";
 
