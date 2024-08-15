@@ -497,6 +497,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                             "english"
                         );
                         resultsTable(showingRadicals, filteredDictionary);
+
+                        // add eventListener to all table rows
+                        tableRowListeners();
                     }
                 });
         }
