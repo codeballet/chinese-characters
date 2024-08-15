@@ -144,36 +144,23 @@ function tableRowListeners() {
     const resultsTrData = document.querySelectorAll(".results__tr--data");
     for (character of resultsTrData) {
         character.addEventListener("click", (e) => {
-            // Acquire info about character
+            // Get table row id: "radicalUTF_characterUTF"
             const id = e.target.parentElement.id;
-            const radicalId = id.split("_")[0];
-            const characterId = id.split("_")[1];
-            let radical;
-            let character;
-            let pinyinList;
-            let toneList;
-            let englishList;
 
-            // Step through the dictionary to find details about id
-            for (element of JSON.parse(localStorage.getItem("dictionary"))) {
-                if (element.id === radicalId) {
-                    radical = element.character;
-                    for (item of element.composites) {
-                        if (item.id === characterId) {
-                            character = item.character;
-                            pinyinList = item.pinyin;
-                            toneList = item.tone;
-                            englishList = item.english;
-                        }
-                    }
-                }
+            // Attempt saving character as card to localStorage
+            const cardSaved = saveCardDetails(id);
+            if (cardSaved) {
+                // Saving successful
+                infoGenerator(
+                    `Card created with character "${decodeURI(
+                        id.split("_")[1]
+                    )}"`
+                );
+            } else {
+                // Saving not successful
+                console.log("Card already exists");
+                infoGenerator("You already have that card!");
             }
-
-            // Create a card
-            generateCard(radical, character, pinyinList, toneList, englishList);
-
-            // Show selected character info to user
-            infoGenerator(`You created a card with character "${character}"`);
         });
     }
 }
