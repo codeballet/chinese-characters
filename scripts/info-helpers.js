@@ -1,3 +1,4 @@
+// Show user info
 function infoOn() {
     if (document.querySelector(".main--info")) {
         if (
@@ -8,6 +9,7 @@ function infoOn() {
     }
 }
 
+// Hide user info
 function infoOff() {
     if (document.querySelector(".main--info")) {
         if (

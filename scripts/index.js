@@ -17,7 +17,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             // Save dictionary to localStorage
             localStorage.setItem("dictionary", JSON.stringify(dictionary));
 
-            // Navigation Find button eventListener
+            // Navigation: Find button eventListener
             document
                 .querySelector(".header__button--find")
                 .addEventListener("click", (e) => {
@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                         .classList.add("d-none");
                 });
 
-            // Navigation Card button eventListener
+            // Navigation: Card button eventListener
             document
                 .querySelector(".header__button--cards")
                 .addEventListener("click", (e) => {
@@ -41,6 +41,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                     document
                         .querySelector(".main--cards")
                         .classList.remove("d-none");
+
+                    // Show cards
+                    generateCards();
                 });
 
             // Search Find button text content
