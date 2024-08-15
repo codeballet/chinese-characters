@@ -1,15 +1,21 @@
 // Run once DOM is loaded
 window.addEventListener("DOMContentLoaded", async () => {
+    infoGenerator("Creating Dictionary...");
     const radicals = await fetchRadicals();
     if (radicals.error) {
         //No radicals from API, inform user
+        infoGenerator(radicals.error);
     } else {
         const dictionary = await createDictionary(radicals);
         if (dictionary.error) {
             // No composite characters from API, inform user
+            infoGenerator(dictionary.error);
         } else {
             // Successfully created dictionary
             console.log("Dictionary loaded");
+            infoGenerator("Dictionary is ready to use");
+            // Save dictionary to localStorage
+            localStorage.setItem("dictionary", JSON.stringify(dictionary));
 
             // Navigation Find button eventListener
             document
@@ -99,6 +105,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                         findButtonRef.innerText
                     );
 
+                    // Reset english input field
+                    document.querySelector(".find__input--english").value = "";
+
                     // Respond to keypresses
                     if (e.key === "Enter") {
                         // Reset input field
@@ -133,6 +142,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                         allCharacters,
                         findButtonRef.innerText
                     );
+
+                    // Reset pinyin input field
+                    document.querySelector(".find__input--pinyin").value = "";
 
                     // Respond to keypresses
                     if (e.key === "Enter") {
