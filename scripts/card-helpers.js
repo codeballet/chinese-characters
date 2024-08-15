@@ -33,6 +33,22 @@ function saveCardDetails(id) {
 // Remove card from the DOM
 function deleteCardDetails(id) {
     console.log("Removing card id:", id);
+    // Acquire cards from localStorage
+    const cardsList = JSON.parse(localStorage.getItem("cards"));
+    // Filter out the releavant card from list
+    const newCardsList = cardsList.filter((card) => card.id !== id);
+    // Store new list in localStorage
+    localStorage.setItem("cards", JSON.stringify(newCardsList));
+}
+
+// Delete card in DOM
+function deleteCardInDOM(id) {
+    const cardRefs = document.querySelectorAll(".card");
+    for (card of cardRefs) {
+        if (card.id === id) {
+            card.remove();
+        }
+    }
 }
 
 // Create cards in the DOM
@@ -60,7 +76,7 @@ function generateCards() {
         for (let card of cards) {
             const id = card.id;
             const mnemonic =
-                card.mnemonic.length === 0 ? "None yet" : card.mnemonic;
+                card.mnemonic.length === 0 ? "Not created" : card.mnemonic;
             const radicalId = id.split("_")[0];
             const characterId = id.split("_")[1];
             let radical;
@@ -106,6 +122,24 @@ function generateCards() {
             mnemonicRef.classList.add("card--mnemonic");
             mnemonicRef.innerText = `Mnemonic: ${mnemonic}`;
 
+            // Mnemonic input field
+            const mnemonicInputdRef = document.createElement("input");
+            mnemonicInputdRef.type = "text";
+            mnemonicInputdRef.classList.add("card--input", "d-none");
+            mnemonicInputdRef.id = `mnemonic${id}`;
+            mnemonicInputdRef.placeholder = "Write new mnemonic";
+
+            // Mnemonic edit button
+            const mnemonicButtonRef = document.createElement("button");
+            mnemonicButtonRef.classList.add("card--mnemonic-button");
+            mnemonicButtonRef.id = `button${id}`;
+            mnemonicButtonRef.innerText = "Edit Mnemonic";
+
+            // Delete button
+            const deleteRef = document.createElement("button");
+            deleteRef.classList.add("card--delete");
+            deleteRef.innerText = "Delete";
+
             // Add elements to DOM
             cardsRef.appendChild(cardRef);
             cardRef.appendChild(characterRef);
@@ -113,6 +147,40 @@ function generateCards() {
             cardRef.appendChild(pinyinRef);
             cardRef.appendChild(englishRef);
             cardRef.appendChild(mnemonicRef);
+            cardRef.appendChild(mnemonicInputdRef);
+            cardRef.appendChild(mnemonicButtonRef);
+            cardRef.appendChild(deleteRef);
+        }
+        // Add Card eventListener for Delete buttons
+        const cardDeleteRefs = document.querySelectorAll(".card--delete");
+        for (let button of cardDeleteRefs) {
+            button.addEventListener("click", (e) => {
+                deleteCardDetails(e.target.parentElement.id);
+                deleteCardInDOM(e.target.parentElement.id);
+            });
+        }
+
+        // Add Card eventListener to edit mnemonics
+        const mnemonicButtonRefs = document.querySelectorAll(
+            ".card--mnemonic-button"
+        );
+        for (button of mnemonicButtonRefs) {
+            button.addEventListener("click", (e) => {
+                const inputRef = document.getElementById(
+                    `mnemonic${e.target.parentElement.id}`
+                );
+                const buttonRef = document.getElementById(
+                    `button${e.target.parentElement.id}`
+                );
+                if (inputRef.classList.contains("d-none")) {
+                    inputRef.classList.toggle("d-none");
+                    buttonRef.innerText = "Save changes";
+                } else {
+                    // Update mnemonic in localStorage
+                    // Show new mnemonic in card
+                    console.log("Do action to edit mnemonic");
+                }
+            });
         }
     } else {
         // No cards in localstorage
