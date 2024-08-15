@@ -77,6 +77,8 @@ window.addEventListener("DOMContentLoaded", async () => {
                     if (showingRadicals) {
                         console.log(dictionary);
                         resultsTable(showingRadicals, dictionary);
+                        // Ensure table is visible
+                        makeTableVisible();
                         // add eventListener to all table rows
                         tableRowListeners();
                     } else {
@@ -97,18 +99,13 @@ window.addEventListener("DOMContentLoaded", async () => {
                         findButtonRef.innerText
                     );
 
-                    // Ensure table is visible
-                    makeTableVisible();
-
                     // Respond to keypresses
                     if (e.key === "Enter") {
                         // Reset input field
                         e.target.value = "";
 
                         // Hide table
-                        document
-                            .querySelector(".results__table")
-                            .classList.toggle("d-none");
+                        makeTableInvisible();
                     } else {
                         const filteredDictionary = filterSearch(
                             showingRadicals,
@@ -116,6 +113,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                             dictionary
                         );
                         resultsTable(showingRadicals, filteredDictionary);
+
+                        // Ensure table is visible
+                        makeTableVisible();
 
                         // add eventListener to all table rows
                         tableRowListeners();
@@ -134,18 +134,13 @@ window.addEventListener("DOMContentLoaded", async () => {
                         findButtonRef.innerText
                     );
 
-                    // Ensure table is visible
-                    makeTableVisible();
-
                     // Respond to keypresses
                     if (e.key === "Enter") {
                         // Reset input field
                         e.target.value = "";
 
                         // Hide table
-                        document
-                            .querySelector(".results__table")
-                            .classList.toggle("d-none");
+                        makeTableInvisible();
                     } else {
                         const filteredDictionary = filterSearch(
                             showingRadicals,
@@ -154,6 +149,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                             "english"
                         );
                         resultsTable(showingRadicals, filteredDictionary);
+
+                        // Ensure table is visible
+                        makeTableVisible();
 
                         // add eventListener to all table rows
                         tableRowListeners();
