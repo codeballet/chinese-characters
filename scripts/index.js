@@ -90,9 +90,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                         makeTableVisible();
                         // add eventListener to all table rows
                         tableRowListeners();
+                        infoGenerator("Click on a table row to add a card");
                     } else {
                         // Make table invisible
                         makeTableInvisible();
+
+                        infoGenerator("Ready to search?");
                     }
                 });
 
@@ -118,6 +121,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                         // Hide table
                         makeTableInvisible();
+
+                        infoGenerator("Ready to search?");
                     } else {
                         const filteredDictionary = filterSearch(
                             showingRadicals,
@@ -131,6 +136,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                         // add eventListener to all table rows
                         tableRowListeners();
+
+                        infoGenerator("Click on a table row to add a card");
                     }
                 });
 
@@ -156,6 +163,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                         // Hide table
                         makeTableInvisible();
+
+                        infoGenerator("Ready to search?");
                     } else {
                         const filteredDictionary = filterSearch(
                             showingRadicals,
@@ -170,6 +179,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                         // add eventListener to all table rows
                         tableRowListeners();
+
+                        infoGenerator("Click on a table row to add a card");
                     }
                 });
         }
