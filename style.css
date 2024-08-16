@@ -242,6 +242,10 @@ body {
 
 /* cards */
 
+.main--cards {
+    margin-top: 2rem;
+}
+
 .cards {
     display: flex;
     flex-direction: row;
