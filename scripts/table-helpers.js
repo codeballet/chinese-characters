@@ -28,17 +28,17 @@ function resultsTable(showingRadicals, dictionary) {
 
     // Create table headers
     const thCharacter = document.createElement("th");
-    thCharacter.classList.add("results__th");
+    thCharacter.classList.add("character__th");
     thCharacter.innerText = "Character";
     trHeaders.appendChild(thCharacter);
 
     const thPinyin = document.createElement("th");
-    thPinyin.classList.add("results__th");
+    thPinyin.classList.add("pinyin__th");
     thPinyin.innerText = "Pinyin";
     trHeaders.appendChild(thPinyin);
 
     const thEnglish = document.createElement("th");
-    thEnglish.classList.add("results__th");
+    thEnglish.classList.add("english__th");
     thEnglish.innerText = "English";
     trHeaders.appendChild(thEnglish);
 
@@ -53,7 +53,7 @@ function resultsTable(showingRadicals, dictionary) {
 
             // Append Character row data
             const tdCharacter = document.createElement("td");
-            tdCharacter.classList.add("results__td");
+            tdCharacter.classList.add("character__td");
             tdCharacter.innerText = entry.character;
             // const buttonCharacter = document.createElement("button");
             // buttonCharacter.classList.add("results__button");

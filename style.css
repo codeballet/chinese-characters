@@ -1,10 +1,332 @@
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@200..900&display=swap");
+
+/* .libre-baskerville-regular {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.libre-baskerville-bold {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.libre-baskerville-regular-italic {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: italic;
+} */
+
+/* <weight>: Use a value from 200 to 900
+.noto-serif-sc-<uniquifier> {
+  font-family: "Noto Serif SC", serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+} */
+
+* {
+    font-family: "Libre Baskerville", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.results__table .character__td,
+.card--character,
+.card--radical {
+    font-family: "Noto Serif SC", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
 /* Globals */
+:root {
+    --body-background-color: #fffbeb;
+    --card-background-color: #fffef4;
+    --find-button-background: #ac422f;
+    --info-text-color: #b73400;
+    --input-color: #f1ede6;
+    --nav-active-color: #8b695a;
+    --nav-button-color: #492a04;
+    --nav-hover-color: #553208;
+    --table-hover-color: #f7debe;
+    --table-line-color: #d5b8a3;
+    --text-color: #2e1a02;
+}
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    color: var(--text-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: var(--body-background-color);
+    width: 100vw;
 }
 
 .d-none {
     display: none;
+}
+
+/* header */
+
+.header {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+}
+
+.header__nav {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.header__nav > button {
+    border: none;
+    border-radius: 0.4rem;
+    background-color: var(--nav-button-color);
+    color: var(--body-background-color);
+    padding: 0.8rem 2rem;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    transition: 0.2s;
+    box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
+}
+
+.header__nav > button:hover {
+    background-color: var(--nav-hover-color);
+    box-shadow: 4px 4px 5px 1px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.header__nav > button:active {
+    background-color: var(--nav-active-color);
+}
+
+/* main */
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 4rem;
+}
+
+.main__h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.main--info {
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 2px;
+    color: var(--info-text-color);
+}
+
+.main--find {
+    margin-top: 1.5rem;
+}
+
+.find--container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.find--container > .find__h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.find--container > input,
+.find--container > .find__button {
+    width: 15rem;
+    height: 3rem;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 0.4rem;
+    margin-top: 0.8rem;
+    box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.find--container > input {
+    padding: 0.5rem 1rem;
+    background-color: var(--input-color);
+}
+
+.find--container > .find__button {
+    padding: 0.5rem;
+    background-color: var(--find-button-background);
+    color: var(--body-background-color);
+}
+
+.find--results {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 3rem;
+}
+
+.find--results > .results__h2 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* table */
+
+.results__table {
+    /* display: flex;
+    flex-direction: column; */
+    margin-top: 1rem;
+    border-collapse: collapse;
+    width: 98%;
+}
+
+.results__table tr {
+    /* display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; */
+}
+
+.results__table tr:hover {
+    background-color: var(--table-hover-color);
+}
+
+.results__table th,
+.results__table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--table-line-color);
+}
+
+.results__table th {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.results__table .character__th,
+.results__table .character__td {
+    width: 6rem;
+}
+
+.results__table .pinyin__th,
+.results__table .pinyin__td {
+    min-width: 7rem;
+    max-width: 10rem;
+}
+
+.results__table .english__th,
+.results__table .english__td {
+    max-width: 30rem;
+}
+
+.results__table .character__td {
+    font-size: 2rem;
+}
+
+/* cards */
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: var(--card-background-color);
+    box-shadow: 3px 3px 5px 5px rgba(0, 0, 0, 0.2);
+    margin: 1rem;
+    width: 17rem;
+    height: 22rem;
+    padding: 0.5rem;
+}
+
+.card--character {
+    font-size: 4rem;
+}
+
+.card h4 {
+    margin-top: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-size: 0.7rem;
+}
+
+.card p {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.card > .card--radical-header {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.card > .card--radical {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-size: 1.8rem;
+}
+
+.card--delete,
+.card--mnemonic-button {
+    position: absolute;
+    bottom: 0.5rem;
+    width: 7.5rem;
+    height: 2rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 0.4rem;
+}
+
+.card--mnemonic-button {
+    left: 0.5rem;
+    background-color: #d2dac2;
+}
+
+.card--delete {
+    right: 0.5rem;
+    background-color: #f2dbd7;
+}
+
+.card--input {
+    margin-top: 0.5rem;
+    height: 2rem;
+    padding: 0.2rem;
+    border: solid 1px var(--table-line-color);
+}
+
+/* footer */
+
+.footer {
+    margin-top: 4rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    opacity: 40%;
 }

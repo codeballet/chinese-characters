@@ -50,7 +50,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             const showRadicals = "Show Radicals";
             const allCharacters = "All Characters";
 
-            // find__button eventListener
+            // find__button for what to show eventListener
             document
                 .querySelector(".find__button")
                 .addEventListener("click", (e) => {

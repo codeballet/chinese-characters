@@ -51,6 +51,25 @@ function deleteCardInDOM(id) {
     }
 }
 
+// Update mnemonic in localStorage and DOM
+function updateMnemonic(id, value) {
+    const newValue = value.length > 0 ? value : "Not created";
+
+    const cards = JSON.parse(localStorage.getItem("cards"));
+    const newCards = cards.map((card) => {
+        if (card.id === id) {
+            card.mnemonic = newValue;
+        }
+        return card;
+    });
+    localStorage.setItem("cards", JSON.stringify(newCards));
+
+    // Show new mnemonic in DOM
+    document.getElementById(`mnemonic${id}`).innerText = newValue;
+    // Reset mnemonic button
+    document.getElementById(`button${id}`).innerText = "Edit Mnemonic";
+}
+
 // Create cards in the DOM
 function generateCards() {
     // Check if any cards are stored in localStorage
@@ -102,31 +121,49 @@ function generateCards() {
             cardRef.classList.add("card");
             cardRef.id = id;
 
+            // Character
             const characterRef = document.createElement("h3");
             characterRef.classList.add("card--character");
             characterRef.innerText = character;
 
-            const radicalRef = document.createElement("h4");
+            // Radical
+            const radicalHeaderRef = document.createElement("h4");
+            radicalHeaderRef.classList.add("card--radical-header");
+            radicalHeaderRef.innerText = "Radical";
+            const radicalRef = document.createElement("p");
             radicalRef.classList.add("card--radical");
-            radicalRef.innerText = `Radical: ${radical}`;
+            radicalRef.innerText = radical;
 
+            // Pinyin
+            const pinyinHeaderRef = document.createElement("h4");
+            pinyinHeaderRef.classList.add("card--pinyin-header");
+            pinyinHeaderRef.innerText = "Pinyin";
             const pinyinRef = document.createElement("p");
             pinyinRef.classList.add("card--pinyin");
-            pinyinRef.innerText = `Pinyin: ${pinyin}`;
+            pinyinRef.innerText = pinyin;
 
+            // English
+            const englishHeaderRef = document.createElement("h4");
+            englishHeaderRef.classList.add("card--english-header");
+            englishHeaderRef.innerText = "English";
             const englishRef = document.createElement("p");
             englishRef.classList.add("card--english");
-            englishRef.innerText = `English: ${englishList.join(", ")}`;
+            englishRef.innerText = englishList.join(", ");
 
+            // Mnemonic
+            const mnemonicHeaderRef = document.createElement("h4");
+            mnemonicHeaderRef.classList.add(".card--mnemonic-header");
+            mnemonicHeaderRef.innerText = "Mnemonic";
             const mnemonicRef = document.createElement("p");
             mnemonicRef.classList.add("card--mnemonic");
-            mnemonicRef.innerText = `Mnemonic: ${mnemonic}`;
+            mnemonicRef.id = `mnemonic${id}`;
+            mnemonicRef.innerText = mnemonic;
 
             // Mnemonic input field
             const mnemonicInputdRef = document.createElement("input");
             mnemonicInputdRef.type = "text";
             mnemonicInputdRef.classList.add("card--input", "d-none");
-            mnemonicInputdRef.id = `mnemonic${id}`;
+            mnemonicInputdRef.id = `input${id}`;
             mnemonicInputdRef.placeholder = "Write new mnemonic";
 
             // Mnemonic edit button
@@ -143,9 +180,13 @@ function generateCards() {
             // Add elements to DOM
             cardsRef.appendChild(cardRef);
             cardRef.appendChild(characterRef);
+            cardRef.appendChild(radicalHeaderRef);
             cardRef.appendChild(radicalRef);
+            cardRef.appendChild(pinyinHeaderRef);
             cardRef.appendChild(pinyinRef);
+            cardRef.appendChild(englishHeaderRef);
             cardRef.appendChild(englishRef);
+            cardRef.appendChild(mnemonicHeaderRef);
             cardRef.appendChild(mnemonicRef);
             cardRef.appendChild(mnemonicInputdRef);
             cardRef.appendChild(mnemonicButtonRef);
@@ -166,19 +207,29 @@ function generateCards() {
         );
         for (button of mnemonicButtonRefs) {
             button.addEventListener("click", (e) => {
-                const inputRef = document.getElementById(
-                    `mnemonic${e.target.parentElement.id}`
-                );
-                const buttonRef = document.getElementById(
-                    `button${e.target.parentElement.id}`
-                );
+                const id = e.target.parentElement.id;
+                const inputRef = document.getElementById(`input${id}`);
+                const buttonRef = document.getElementById(`button${id}`);
+                const mnemonicRef = document.getElementById(`mnemonic${id}`);
                 if (inputRef.classList.contains("d-none")) {
+                    // Show input field to edit
                     inputRef.classList.toggle("d-none");
+                    inputRef.focus();
                     buttonRef.innerText = "Save changes";
+
+                    // eventlistener for pressing "Enter" on the input
+                    document
+                        .getElementById(`input${id}`)
+                        .addEventListener("keyup", (e) => {
+                            if (e.key === "Enter") {
+                                inputRef.classList.toggle("d-none");
+                                updateMnemonic(id, e.target.value);
+                            }
+                        });
                 } else {
-                    // Update mnemonic in localStorage
-                    // Show new mnemonic in card
-                    console.log("Do action to edit mnemonic");
+                    // Mnemonic save button is pressed
+                    inputRef.classList.toggle("d-none");
+                    updateMnemonic(id, inputRef.value);
                 }
             });
         }
